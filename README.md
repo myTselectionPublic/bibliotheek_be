@@ -1,10 +1,10 @@
 [![HACS Default](https://img.shields.io/badge/HACS-Default-blue.svg)](https://github.com/hacs/default)
-[![GitHub release](https://img.shields.io/github/release/myTselection/bibliotheek_be.svg)](https://github.com/myTselection/bibliotheek_be/releases)
-![GitHub repo size](https://img.shields.io/github/repo-size/myTselection/bibliotheek_be.svg)
+[![GitHub release](https://img.shields.io/github/release/myTselectionPublic/bibliotheek_be.svg)](https://github.com/myTselectionPublic/bibliotheek_be/releases)
+![GitHub repo size](https://img.shields.io/github/repo-size/myTselectionPublic/bibliotheek_be.svg)
 
-[![GitHub issues](https://img.shields.io/github/issues/myTselection/bibliotheek_be.svg)](https://github.com/myTselection/bibliotheek_be/issues)
-[![GitHub last commit](https://img.shields.io/github/last-commit/myTselection/bibliotheek_be.svg)](https://github.com/myTselection/bibliotheek_be/commits/master)
-[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/myTselection/bibliotheek_be.svg)](https://github.com/myTselection/bibliotheek_be/graphs/commit-activity)
+[![GitHub issues](https://img.shields.io/github/issues/myTselectionPublic/bibliotheek_be.svg)](https://github.com/myTselectionPublic/bibliotheek_be/issues)
+[![GitHub last commit](https://img.shields.io/github/last-commit/myTselectionPublic/bibliotheek_be.svg)](https://github.com/myTselectionPublic/bibliotheek_be/commits/master)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/myTselectionPublic/bibliotheek_be.svg)](https://github.com/myTselectionPublic/bibliotheek_be/graphs/commit-activity)
 
 # Bibliotheek.be Bib Home Assistant integration
 
@@ -19,12 +19,12 @@ By using the custom services available in this integration, the **lendings can b
 | :warning: Please don't report issues with this integration to Bibliotheek.be, they will not be able to support you. |
 | ------------------------------------------------------------------------------------------------------------------- |
 
-<p align="center"><img src="https://raw.githubusercontent.com/myTselection/bibliotheek_be/master/icon_small.png"/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/myTselectionPublic/bibliotheek_be/master/icon_small.png"/></p>
 
 ## Installation
 
 - [HACS](https://hacs.xyz/): search for the integration in the list of HACS
-  - [![Open your Home Assistant instance and open the repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg?style=flat-square)](https://my.home-assistant.io/redirect/hacs_repository/?owner=myTselection&repository=bibliotheek_be&category=integration)
+  - [![Open your Home Assistant instance and open the repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg?style=flat-square)](https://my.home-assistant.io/redirect/hacs_repository/?owner=myTselectionPublic&repository=bibliotheek_be&category=integration)
 - Restart Home Assistant
 - Add 'Bibliotheek.be' integration via HA Settings > 'Devices and Services' > 'Integrations'
 - Provide Bibliotheek.be username and password
@@ -162,15 +162,15 @@ Following services `bibliotheek_be` will be available:
 
 ## Status
 
-Still some optimisations are planned, see [Issues](https://github.com/myTselection/bibliotheek_be/issues) section in GitHub.
+Still some optimisations are planned, see [Issues](https://github.com/myTselectionPublic/bibliotheek_be/issues) section in GitHub.
 
 ## Technical pointers
 
 The main logic and API connection related code can be found within source code bibliotheek_be/custom_components/bibliotheek_be:
 
-- [sensor.py](https://github.com/myTselection/bibliotheek_be/blob/master/custom_components/bibliotheek_be/sensor.py)
-- [utils.py](https://github.com/myTselection/bibliotheek_be/blob/master/custom_components/bibliotheek_be/utils.py) -> mainly ComponentSession class
-- [\_init\_.py](https://github.com/myTselection/bibliotheek_be/blob/master/custom_components/bibliotheek_be/_init_.py) -> general setup + services
+- [sensor.py](https://github.com/myTselectionPublic/bibliotheek_be/blob/master/custom_components/bibliotheek_be/sensor.py)
+- [utils.py](https://github.com/myTselectionPublic/bibliotheek_be/blob/master/custom_components/bibliotheek_be/utils.py) -> mainly ComponentSession class
+- [\_init\_.py](https://github.com/myTselectionPublic/bibliotheek_be/blob/master/custom_components/bibliotheek_be/_init_.py) -> general setup + services
 
 All other files just contain boilerplate code for the integration to work within HA or to have some constants/strings/translations.
 
@@ -178,8 +178,8 @@ All other files just contain boilerplate code for the integration to work within
 
 ### Markdown Example for details of all libraries
 
-<p align="center"><img src="https://raw.githubusercontent.com/myTselection/bibliotheek_be/master/Markdown%20Card%20example.png" width="400"/></p>
-<p align="center"><img src="https://raw.githubusercontent.com/myTselection/bibliotheek_be/master/Markdown%20Card%20details%20example.png" width="400"/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/myTselectionPublic/bibliotheek_be/master/Markdown%20Card%20example.png" width="400"/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/myTselectionPublic/bibliotheek_be/master/Markdown%20Card%20details%20example.png" width="400"/></p>
 
 <details><summary>Click to show the Mardown example</summary>
 
@@ -187,7 +187,7 @@ All other files just contain boilerplate code for the integration to work within
 type: markdown
 content: >-
   [<img
-  src="https://raw.githubusercontent.com/myTselection/bibliotheek_be/master/icon_small_transp.png"
+  src="https://raw.githubusercontent.com/myTselectionPublic/bibliotheek_be/master/icon_small_transp.png"
   style="max-width: 10%; height:
   auto;!important;">](https://beersel.bibliotheek.be)
 
