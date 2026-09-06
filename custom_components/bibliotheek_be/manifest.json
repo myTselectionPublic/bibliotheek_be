@@ -1,13 +1,13 @@
 {
     "domain": "bibliotheek_be",
     "name": "Bibliotheek.be",
-    "codeowners": ["@myTselection"],
+    "codeowners": ["@myTselection","@myTselectionPublic"],
     "config_flow": true,
     "dependencies": [],
-    "documentation": "https://github.com/myTselection/bibliotheek_be",
+    "documentation": "https://github.com/myTselectionPublic/bibliotheek_be",
     "integration_type": "hub",
     "iot_class": "cloud_polling",
-    "issue_tracker": "https://github.com/myTselection/bibliotheek_be/issues",
+    "issue_tracker": "https://github.com/myTselectionPublic/bibliotheek_be/issues",
     "requirements": ["bs4", "html5lib", "python-barcode", "ratelimit"],
     "version": "3.3.1"
 }
