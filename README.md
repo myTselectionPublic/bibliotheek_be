@@ -198,10 +198,9 @@ content: >-
   {% endif %}
 
   {% set libs = states
-    | selectattr("entity_id","match","^sensor.bibliotheek_be_bib*")
-    | rejectattr("state", "match","unavailable")
+    | selectattr("entity_id", "match", "^sensor\.bibliotheek_be_bib.*")
+    | rejectattr("state", "eq", "unavailable")
     | list %}
-
   {% set numeric = libs
     | rejectattr("state","eq","unknown")
     | list %}
@@ -221,20 +220,18 @@ content: >-
   {% for library_device in libraries %}
     {% set library = library_device.entity_id %}
     ## Bib {{state_attr(library,'libraryName') }}:
-    {% set all_books = state_attr(library,'loandetails')| sort(attribute="isRenewable", reverse=False) | sort(attribute="days_remaining", reverse=False)  | list %}
+    {% set all_books = state_attr(library, 'loandetails') | default([], true) %}
+    {% set all_books = all_books
+      | sort(attribute="isRenewable", reverse=false)
+      | sort(attribute="days_remaining", reverse=false)
+      | list %}
     {% if all_books %}
 
     - {{state_attr(library,"num_loans") }} stuk{% if state_attr(library,'num_loans')|int > 1 %}s{% endif %} {%if state_attr(library,'some_not_extendable')%}**in te leveren** binnen{% else %}te verlengen in{% endif %} **{{states(library)}}** dag{% if states(library)|int > 1 %}en{% endif %}: {{strptime(state_attr(library,'lowest_till_date'), "%d/%m/%Y").strftime("%a %d/%m/%Y") }}
 
   <details><summary>Toon details:</summary>
 
-  {% for book in all_books  %}
-  {% set barcode_sensor = states.sensor
-    | selectattr("attributes.barcode","eq",book.barcode)
-    | map(attribute="entity_id")
-    | list
-    | first %}
-  <details>
+  {% for book in all_books  %}  <details>
 
   <summary>{% if book.extend_loan_id %}{{ strptime(book.loan_till,
   "%d/%m/%Y").strftime("%a %d/%m/%Y") }}{% else %}<b>{{ strptime(book.loan_till,
@@ -246,9 +243,8 @@ content: >-
   target="_blank">verlengbaar</a>{% else %}<b>Niet verlengbaar</b>{% endif
   %}</li> <li>Bibliotheek: <a href="{{book.url}}"
   target="_blank">{{book.library}}</a></li> <li>Gebruiker: <a
-  href="{{book.accountUrl}}">{{book.user}}
-  ({{book.barcode}})</a>{% if barcode_sensor %}<br/>
-  <a href="{{state_attr(barcode_sensor,'barcode_url')}}"><img src="{{state_attr(barcode_sensor,'barcode_url') }}" height="100"/></a>{% endif %}</li> <li>Type: {% if book.loan_type == 'Unknown'
+  href="https://barcodeapi.org/api/128/{{book.barcode}}">{{book.user}}
+  ({{book.barcode}})</a></li> <li>Type: {% if book.loan_type == 'Unknown'
   %}Onbekend{% else %}{{book.loan_type}}{% endif %}</li> <br/><a
   href="{{book.url}}"><img src="{{ book.image_src }}" height="100"/></a> </ul>
 
@@ -295,25 +291,33 @@ content: >-
              {% if intervals | length > 0 %}
                {% if offset == 0 %}
                  {# check if now inside any interval today #}
-                 {% for intr in intervals %}
-                   {% set parts = intr.split('-') %}
-                   {% set st = parts[0].strip() %}
-                   {% set en = parts[1].strip() %}
-                   {% if now_t >= strptime(st, "%H:%M").time() and now_t < strptime(en, "%H:%M").time() %}
-                     {% set ns.bold = day %}
-                     {% break %}
-                   {% endif %}
-                 {% endfor %}
+                {% for intr in intervals %}
+                  {% set parts = intr.split('-', 1) %}
+                  {% if parts | length == 2 %}
+                    {% set st = parts[0].strip() %}
+                    {% set en = parts[1].strip() %}
+                
+                    {% if now_t >= strptime(st, "%H:%M").time()
+                          and now_t < strptime(en, "%H:%M").time() %}
+                      {% set ns.bold = day %}
+                      {% break %}
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
                  {% if ns.bold is not none %}
                    {% break %}
                  {% endif %}
                  {# check if there is a later interval today #}
                  {% for intr in intervals %}
-                   {% set st = intr.split('-')[0].strip() %}
-                   {% if now_t < strptime(st, "%H:%M").time() %}
-                     {% set ns.bold = day %}
-                     {% break %}
-                   {% endif %}
+                    {% set parts = intr.split('-', 1) %}
+                    {% if parts | length == 2 %}
+                      {% set st = parts[0].strip() %}
+                  
+                      {% if now_t < strptime(st, "%H:%M").time() %}
+                        {% set ns.bold = day %}
+                        {% break %}
+                      {% endif %}
+                    {% endif %}
                  {% endfor %}
                  {% if ns.bold is not none %}
                    {% break %}
@@ -343,9 +347,7 @@ content: >-
 
   Laatst bijgewerkt: {{ state_attr(first_library, 'last update') | as_timestamp
   | timestamp_custom("%d %h %H:%M") }} {% endif %}
-    
-  Automatische verlenging van boeken die binnen 5 dagen moeten ingeleverd
-  worden.
+  
 
 ```
 
