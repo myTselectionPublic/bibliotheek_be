@@ -27,6 +27,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .coordinator import MyDataUpdateCoordinator
 from .const import (
     CONF_REFRESH_INTERVAL,
+    DEFAULT_REFRESH_INTERVAL,
     DOMAIN,
 )
 # manifestfile = Path(__file__).parent / 'manifest.json'
@@ -40,7 +41,7 @@ from .const import (
 DOMAIN = "bibliotheek_be"
 NAME = "Bibliotheek.be"
 
-PLATFORMS = [Platform.SENSOR]
+PLATFORMS = [Platform.SENSOR, Platform.BUTTON, Platform.BINARY_SENSOR]
 
 STARTUP = """
 -------------------------------------------------------------------
@@ -93,7 +94,10 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Set up component as config entry."""
-    refresh_interval = 30
+    refresh_interval = config_entry.options.get(
+        CONF_REFRESH_INTERVAL,
+        config_entry.data.get(CONF_REFRESH_INTERVAL, DEFAULT_REFRESH_INTERVAL),
+    )
     coordinator = MyDataUpdateCoordinator(hass, config_entry, refresh_interval)
     await coordinator.async_config_entry_first_refresh()
     
@@ -162,13 +166,10 @@ def register_services(hass, config_entry):
         
 
     async def handle_update(call):
-        """Handle the service call."""
-        state_warning_sensor = hass.states.get(f"sensor.{DOMAIN}_warning")
-        _LOGGER.debug(f"state_warning_sensor sensor.{DOMAIN}_warning {state_warning_sensor}")
-        state_warning_sensor_attributes = dict(state_warning_sensor.attributes)
-        state_warning_sensor_attributes["refresh_required"] = True
-        await hass.async_add_executor_job(lambda: hass.states.set(f"sensor.{DOMAIN}_warning",state_warning_sensor.state,state_warning_sensor_attributes))
-        _LOGGER.info(f"handle_update done")
+        """Refresh every currently loaded account."""
+        from .refresh import async_refresh_all_accounts
+
+        await async_refresh_all_accounts(hass)
 
 
     hass.services.async_register(DOMAIN, 'extend_loan', handle_extend_loan)

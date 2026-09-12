@@ -30,6 +30,12 @@
     },
     "options": {
         "step": {
+            "init": {
+                "description": "Escolha a frequência de atualização dos dados desta conta.",
+                "data": {
+                    "refresh_interval": "Intervalo de atualização (minutos)"
+                }
+            },
             "edit": {
                 "description": "configurar o sensor Bibliotheek.be, os utilizador e Palavra-Passe são obrigatórios.",
                 "data": {
@@ -104,7 +110,7 @@
         }, 
         "update": {
             "name": "Atualizar",
-            "description": "Forçar uma atualização dos dados do sensor (as atualizações padrão são limitadas por hora)."
+            "description": "Atualizar os dados do portal de todas as contas carregadas."
         }
 
     }

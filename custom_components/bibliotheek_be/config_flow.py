@@ -6,7 +6,8 @@ import voluptuous as vol
 from homeassistant import config_entries
 
 from . import DOMAIN, NAME
-from .const import CONF_OPENING_HOURS_LIBRARIES
+from .const import CONF_OPENING_HOURS_LIBRARIES, CONF_REFRESH_INTERVAL, DEFAULT_REFRESH_INTERVAL
+from homeassistant.core import callback
 from .utils import ComponentSession
 from homeassistant.const import (
     CONF_PASSWORD,
@@ -161,34 +162,31 @@ class ComponentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         """
         return self.async_create_entry(title="configuration.yaml", data={})
 
-    # @staticmethod
-    # @callback
-    # def async_get_options_flow(config_entry):  # TODO
-    #     """Get the options flow for this handler."""
-    #     return ComponentOptionsHandler(config_entry)
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry):
+        """Return the account options flow."""
+        return ComponentOptionsHandler()
 
 
 class ComponentOptionsHandler(config_entries.OptionsFlow):
-    """Now this class isnt like any normal option handlers.. as ha devs option seems think options is
-    #  supposed to be EXTRA options, i disagree, a user should be able to edit anything.."""
-
-    def __init__(self, config_entry):
-        self.config_entry = config_entry
-        self.options = dict(config_entry.options)
-        self._errors = {}
+    """Configure how often this account is refreshed."""
 
     async def async_step_init(self, user_input=None):
-
-        return self.async_show_form(
-            step_id="edit",
-            data_schema=vol.Schema(create_schema(self.config_entry, option=True)),
-            errors=self._errors,
-        )
-
-    async def async_step_edit(self, user_input):
-        # edit does not work.
+        """Show and save the refresh interval in minutes."""
         if user_input is not None:
-            self.hass.config_entries.async_update_entry(
-                self.config_entry, data=user_input
+            return self.async_create_entry(
+                title="", data={**self.config_entry.options, **user_input}
             )
-            return self.async_create_entry(title="", data={})
+
+        interval = self.config_entry.options.get(
+            CONF_REFRESH_INTERVAL,
+            self.config_entry.data.get(CONF_REFRESH_INTERVAL, DEFAULT_REFRESH_INTERVAL),
+        )
+        return self.async_show_form(
+            step_id="init",
+            data_schema=vol.Schema({
+                vol.Required(CONF_REFRESH_INTERVAL, default=interval):
+                    vol.All(vol.Coerce(int), vol.Range(min=1)),
+            }),
+        )

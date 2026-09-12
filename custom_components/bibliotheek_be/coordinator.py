@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
+from copy import deepcopy
 import logging
 
 
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.util import dt as dt_util
 
 from homeassistant.const import (
     CONF_PASSWORD,
@@ -35,6 +37,7 @@ class MyDataUpdateCoordinator(DataUpdateCoordinator):
         self._session = ComponentSession(self._hass)
         self._userDetailsAndLoansAndReservations = None
         self._last_updated = None
+        self.last_successful_refresh = None
         self._userdetails = None
         self._userLists = None
         self._loandetails = None
@@ -111,7 +114,9 @@ class MyDataUpdateCoordinator(DataUpdateCoordinator):
                 assert self._userLists is not None
                 _LOGGER.debug(f"{DOMAIN} update user lists completed {self._userLists}")
                 self._last_updated = datetime.now()
-                self.data = {
+                # Publish an independent snapshot so a later partial failure
+                # cannot mutate the last known good sensor data.
+                self.data = deepcopy({
                     "userdetails": self._userdetails,
                     "reservationdetails": self._reservationdetails,
                     "userLists": self._userLists,
@@ -120,7 +125,8 @@ class MyDataUpdateCoordinator(DataUpdateCoordinator):
                     "loandetails": self._loandetails,    
                     "loanDetailsUpdated": self._loanDetailsUpdated,
                     "userDetailsAndLoansAndReservations": self._userDetailsAndLoansAndReservations
-                }
+                })
+            self.last_successful_refresh = dt_util.utcnow()
             return self.data
         except Exception as err:
             _LOGGER.error(f"{DOMAIN} ComponentUpdateCoordinator update failed, username: {self._username}", exc_info=err)

@@ -16,6 +16,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import DOMAIN, NAME
 from .utils import *
+from .diagnostic import AccountDiagnosticEntity
 from homeassistant.const import (
     CONF_PASSWORD,
     CONF_USERNAME
@@ -139,6 +140,7 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
     coordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
     config = config_entry.data
     await dry_setup(hass, config, async_add_devices, coordinator)
+    async_add_devices([LastSuccessfulRefreshSensor(coordinator, config_entry)])
     return True
 
 
@@ -150,6 +152,20 @@ async def async_remove_entry(hass, config_entry):
     except ValueError:
         pass
 
+
+
+class LastSuccessfulRefreshSensor(AccountDiagnosticEntity, SensorEntity):
+    """Retain the last successful refresh time when a later request fails."""
+
+    _attr_name = "Last successful refresh"
+    _attr_device_class = SensorDeviceClass.TIMESTAMP
+
+    def __init__(self, coordinator, config_entry):
+        super().__init__(coordinator, config_entry, "last_successful_refresh")
+
+    @property
+    def native_value(self):
+        return self.coordinator.last_successful_refresh
 
 
 class ComponentData:
@@ -196,7 +212,15 @@ def shortenLibraryName(libraryName):
 def legacy_entity_id(name):
     return f"sensor.{slugify(name)}"
 
-class ComponentUserSensor(CoordinatorEntity, SensorEntity):
+class RetainedDataSensor(CoordinatorEntity, SensorEntity):
+    """Keep the last successful portal snapshot available during failures."""
+
+    @property
+    def available(self):
+        return self.coordinator.data is not None
+
+
+class ComponentUserSensor(RetainedDataSensor):
     _attr_has_entity_name = False
 
     def __init__(self, data, hass, userid):
@@ -368,7 +392,7 @@ class ComponentUserSensor(CoordinatorEntity, SensorEntity):
         return f"{self._username} {self._libraryName}"
 
 
-class ComponentLibrarySensor(CoordinatorEntity, SensorEntity):
+class ComponentLibrarySensor(RetainedDataSensor):
     _attr_has_entity_name = False
 
     def __init__(self, data, hass, libraryName):
@@ -512,7 +536,7 @@ class ComponentLibrarySensor(CoordinatorEntity, SensorEntity):
         return f"Bib {shortenLibraryName(self._libraryName)}"
 
 
-class ComponentLibrariesWarningSensor(CoordinatorEntity, SensorEntity):
+class ComponentLibrariesWarningSensor(RetainedDataSensor):
     _attr_has_entity_name = False
 
     def __init__(self, data, hass):
@@ -653,7 +677,7 @@ class ComponentLibrariesWarningSensor(CoordinatorEntity, SensorEntity):
         return self.name
 
 
-class ComponentListSensor(CoordinatorEntity, SensorEntity):
+class ComponentListSensor(RetainedDataSensor):
     _attr_has_entity_name = False
 
     def __init__(self, data, hass, listname, listid):

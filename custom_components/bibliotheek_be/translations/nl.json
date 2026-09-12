@@ -29,6 +29,12 @@
     },
     "options": {
         "step": {
+            "init": {
+                "description": "Kies hoe vaak dit account de portaalgegevens ophaalt.",
+                "data": {
+                    "refresh_interval": "Verversingsinterval (minuten)"
+                }
+            },
             "edit": {
                 "description": "Stel een Bibliotheek.be-sensor in. Gebruikersnaam en wachtwoord zijn vereist.",
                 "data": {
@@ -99,7 +105,7 @@
         }, 
         "update": {
             "name": "update",
-            "description": "Dwing een update van de sensorgegevens af (standaardupdates zijn beperkt per uur)."
+            "description": "Ververs de portaalgegevens voor alle geladen accounts."
         }
     }
 }

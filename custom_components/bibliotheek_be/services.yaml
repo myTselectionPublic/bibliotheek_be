@@ -50,4 +50,4 @@ extend_all_loans:
 
 update:
   description: >
-    Force an update of the sensor data (standard updates are throttled per hour).
+    Refresh portal data for all currently loaded accounts.

@@ -1,3 +1,9 @@
 pytest
-pytest-cov==2.9.0
+pytest-cov
+pytest-asyncio
 pytest-homeassistant-custom-component
+bs4
+html5lib
+python-barcode
+ratelimit
+requests

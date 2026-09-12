@@ -30,6 +30,12 @@
     },
     "options": {
         "step": {
+            "init": {
+                "description": "Choose how often this account fetches portal data.",
+                "data": {
+                    "refresh_interval": "Refresh interval (minutes)"
+                }
+            },
             "edit": {
                 "description": "Setup a Bibliotheek.be sensor, username and password are required.",
                 "data": {
@@ -104,7 +110,7 @@
         },
         "update": {
             "name": "update",
-            "description": "Force an update of the sensor data (standard updates are throttled per hour)."
+            "description": "Refresh portal data for all currently loaded accounts."
         }
 
     }

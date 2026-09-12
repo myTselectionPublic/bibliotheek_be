@@ -34,6 +34,20 @@ By using the custom services available in this integration, the **lendings can b
 
 Sensors `Bibliotheek.be` should become available with the number of items lent out.
 
+Each configured account also has a **Refresh data** button on its Bibliotheek.be device. Press it to fetch the latest portal data and update the account's sensors without waiting for the next scheduled update. You can also add the button to a dashboard or use it in automations with the `button.press` action.
+
+The **Refresh all accounts** button on each Bibliotheek.be device refreshes every currently loaded account. Press any one of these buttons to update all accounts together, including their linked users.
+
+Change the **Refresh interval (minutes)** for each account through **Settings > Devices & services > Bibliotheek.be > Configure**. The default is 30 minutes and the minimum is 1 minute. Saving the options reloads the account with the new interval.
+
+Each account also provides **Last successful refresh** and **Connection status** diagnostic entities. Connection status indicates whether the latest data fetch succeeded. If a refresh fails, sensors keep showing their last known data and the last successful refresh timestamp stays unchanged. These values are retained in memory; a restart still requires a successful initial fetch.
+
+The `bibliotheek_be.update` action immediately requests fresh data for all currently loaded accounts, just like **Refresh all accounts**.
+
+### Development tests
+
+On Linux with a Python version supported by Home Assistant, install `requirements.test.txt` in a virtual environment and run `python -m pytest`. Tests use mocked portal responses and dummy account details; no real credentials or portal access are required.
+
 - <details><summary><code>sensor.bibliotheek_be_[username]_[library]</code> will be created for each user linked to the account</summary>
 
   | Attribute               | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
