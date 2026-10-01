@@ -655,7 +655,7 @@ class ComponentSession(object):
             books = div.find_all('div', class_='my-library-user-library-account-loans__loan')
             for book in books:
                 try:
-                    libname = book.find('h3', class_='my-library-user-library-account-loans__loan-title').a.get('href').split('.')[0].split('//')[1].title()
+                    libname = book.find('h3', class_='my-library-user-library-account-loans__loan-title').a.get('href').rsplit('.', 1)[0].rsplit('//', 1)[-1].title()
                 except AttributeError:
                     libname = ""
                 try:
